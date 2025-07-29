@@ -24,10 +24,19 @@ export async function GET(req: NextRequest) {
       conditions.push(ilike(awards.register, `%${register}%`));
     }
 
+    const files = await db.query.files.findMany();
+
     const result = await db
       .select()
       .from(awards)
       .where(conditions.length ? and(...conditions) : undefined);
+
+    result.forEach((award) => {
+      const file = files.find((file) => file.nitxCode === award.nitxCode);
+      if (file) {
+        award.url = file.url;
+      }
+    });
 
     return NextResponse.json({ success: true, data: result });
   } catch (error) {

@@ -31,8 +31,6 @@ export const awardsList = async (filters: AwardFilters = {}) => {
     async () => {
       const whereConditions = [];
 
-      console.log("here");
-
       if (filters.firstName) {
         whereConditions.push(ilike(awards.firstName, `%${filters.firstName}%`));
       }
@@ -49,9 +47,18 @@ export const awardsList = async (filters: AwardFilters = {}) => {
         whereConditions.push(ilike(awards.awardName, `%${filters.awardName}%`));
       }
 
+      const files = await db.query.files.findMany();
+
       const results = await db.query.awards.findMany({
         where: whereConditions.length ? and(...whereConditions) : undefined,
         orderBy: (awards, { desc }) => [desc(awards.id)],
+      });
+
+      results.forEach((award) => {
+        const file = files.find((file) => file.nitxCode === award.nitxCode);
+        if (file) {
+          award.url = file.url;
+        }
       });
 
       return results;

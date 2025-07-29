@@ -8,12 +8,10 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
-  type DragEndEvent,
   type UniqueIdentifier,
 } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
-  arrayMove,
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
@@ -75,7 +73,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -99,9 +96,10 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { FileText } from "lucide-react";
 import { DeleteAwardDialog } from "./delete-dialog";
-import { UpdateAwardSheet } from "./update-sheet";
 import { SearchInput } from "./search-input";
+import { UpdateAwardSheet } from "./update-sheet";
 
 export const schema = z.object({
   id: z.number(),
@@ -194,6 +192,19 @@ const columns: ColumnDef<Award>[] = [
           {row.original.nitxCode}
         </Badge>
       </div>
+    ),
+  },
+  {
+    accessorKey: "url",
+    header: () => <div className="w-full">Тогтоол</div>,
+    cell: ({ row }) => (
+      <a
+        href={row.original.url || ""}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <FileText className="text-[#F40F02]" />
+      </a>
     ),
   },
   {

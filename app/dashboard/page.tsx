@@ -19,8 +19,6 @@ export default async function Page({ searchParams }: Props) {
     awardName: params?.awardName as string | undefined,
   });
 
-  console.log("Data fetched for dashboard:", data);
-
   return (
     <SidebarProvider
       style={
