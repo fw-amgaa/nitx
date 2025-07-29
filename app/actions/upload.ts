@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath, revalidateTag } from "next/cache";
 import { db } from "../db/client";
 import { awards } from "../db/schema";
 
@@ -54,6 +55,8 @@ export async function uploadAwards(
     }
 
     await db.insert(awards).values(validData);
+
+    revalidateTag("awards");
 
     return {
       success: true,

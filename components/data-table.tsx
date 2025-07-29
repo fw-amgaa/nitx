@@ -99,6 +99,9 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DeleteAwardDialog } from "./delete-dialog";
+import { UpdateAwardSheet } from "./update-sheet";
+import { SearchInput } from "./search-input";
 
 export const schema = z.object({
   id: z.number(),
@@ -214,7 +217,7 @@ const columns: ColumnDef<Award>[] = [
   },
   {
     id: "actions",
-    cell: () => (
+    cell: ({ row }) => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -227,11 +230,9 @@ const columns: ColumnDef<Award>[] = [
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
+          <UpdateAwardSheet award={row.original} />
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+          <DeleteAwardDialog id={row.original.id} />
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -263,8 +264,7 @@ function DraggableRow({ row }: { row: Row<Award> }) {
   );
 }
 
-export function DataTable({ data: initialData }: { data: Award[] }) {
-  const [data, setData] = React.useState(() => initialData);
+export function DataTable({ data }: { data: Award[] }) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -313,28 +313,17 @@ export function DataTable({ data: initialData }: { data: Award[] }) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    if (active && over && active.id !== over.id) {
-      setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id);
-        const newIndex = dataIds.indexOf(over.id);
-        return arrayMove(data, oldIndex, newIndex);
-      });
-    }
-  }
-
   return (
     <Tabs
       defaultValue="outline"
       className="w-full flex-col justify-start gap-6"
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
-        <Label htmlFor="view-selector" className="sr-only">
-          View
-        </Label>
-
         <div className="flex items-center gap-2">
+          <SearchInput name="firstName" placeholder="Нэрээр хайх" />
+          <SearchInput name="lastName" placeholder="Овгоор хайх" />
+          <SearchInput name="register" placeholder="Регистр хайх" />
+          <SearchInput name="awardName" placeholder="Тогтоолын нэр хайх" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
@@ -378,7 +367,6 @@ export function DataTable({ data: initialData }: { data: Award[] }) {
           <DndContext
             collisionDetection={closestCenter}
             modifiers={[restrictToVerticalAxis]}
-            onDragEnd={handleDragEnd}
             sensors={sensors}
             id={sortableId}
           >

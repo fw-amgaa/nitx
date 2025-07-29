@@ -4,8 +4,22 @@ import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { awardsList } from "../actions/query";
 
-export default async function Page() {
-  const data = await awardsList();
+interface Props {
+  searchParams?: Promise<{
+    [key: string]: string | string[] | undefined;
+  }>;
+}
+
+export default async function Page({ searchParams }: Props) {
+  const params = await searchParams;
+  const data = await awardsList({
+    firstName: params?.firstName as string | undefined,
+    lastName: params?.lastName as string | undefined,
+    register: params?.register as string | undefined,
+    awardName: params?.awardName as string | undefined,
+  });
+
+  console.log("Data fetched for dashboard:", data);
 
   return (
     <SidebarProvider
