@@ -49,7 +49,7 @@ export default function UploadAwardsDialog() {
       } else {
         toast.error(res.message);
       }
-    } catch (err) {
+    } catch {
       toast.error("Өгөгдөл илгээх үед алдаа гарлаа.");
     } finally {
       setLoading(false);
@@ -98,23 +98,32 @@ export default function UploadAwardsDialog() {
   );
 }
 
-// --- Excel parsing utility
 async function parseExcel(file: File): Promise<UploadAwardsInput[]> {
   const data = await file.arrayBuffer();
   const workbook = XLSX.read(data);
   const sheetName = workbook.SheetNames[0];
   const sheet = workbook.Sheets[sheetName];
-  const json: Record<string, string | number>[] =
-    XLSX.utils.sheet_to_json(sheet);
+
+  const json = XLSX.utils.sheet_to_json<Record<string, string | number>>(
+    sheet,
+    {
+      range: 3,
+      defval: "",
+    }
+  );
 
   const parsed: UploadAwardsInput[] = json.map((row) => ({
     lastName: String(row["Овог"] || ""),
     firstName: String(row["Нэр"] || ""),
     register: String(row["Регистрийн дугаар"] || ""),
-    awardName: String(row["Нэр дэвшиж буй шагналын нэр"] || ""),
-    nitxCode: String(row["НИТХ-ын тогтоолын дугаар"] || "").slice(0, 3),
-    date: String(row["Огноо"] || ""),
+    awardName: String(row["Ямар шагналд тодорхойлогдсон"] || ""),
+    nitxCode: String(row["Тогтоолын дугаар"] || ""),
+    date: String(row["НИТХ-ын Тогтоолын огноо"] || ""),
+    awardOrder: String(row["Цол, одон, медалийн дугаарлалт"] || ""),
     status: String(row["Төлөв"] || ""),
+    awardedDate: String(row["Шагнагдсан огноо"] || ""),
+    medalNumber: String(row["Одон медалийн дугаар"] || ""),
+    details: String(row["Шагнагдсан мэдээлэл"] || ""),
   }));
 
   return parsed;

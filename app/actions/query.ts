@@ -1,10 +1,11 @@
 "use server";
 
-import { and, eq, ilike } from "drizzle-orm";
+import { and, count, eq, ilike } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { db } from "../db/client";
 import { awards } from "../db/schema";
 import { unstable_cache } from "@/lib/unstable-cache";
+import { PER_PAGE_DEFAULT } from "@/lib/constants";
 
 interface UpdateAwardParams {
   id: number;
@@ -18,15 +19,17 @@ interface UpdateAwardParams {
 }
 
 interface AwardFilters {
+  perPage?: number;
+  page?: number;
   firstName?: string;
   lastName?: string;
   register?: string;
   awardName?: string;
 }
 
-export type Award = Awaited<ReturnType<typeof awardsList>>[number];
+export type Award = Awaited<ReturnType<typeof awardsList>>["data"][number];
 
-export const awardsList = async (filters: AwardFilters = {}) => {
+export const awardsList = async (filters: AwardFilters) => {
   return await unstable_cache(
     async () => {
       const whereConditions = [];
@@ -47,21 +50,42 @@ export const awardsList = async (filters: AwardFilters = {}) => {
         whereConditions.push(ilike(awards.awardName, `%${filters.awardName}%`));
       }
 
-      const files = await db.query.files.findMany();
+      const where = whereConditions.length
+        ? and(...whereConditions)
+        : undefined;
+
+      const total = await db
+        .select({ count: count() })
+        .from(awards)
+        .where(where)
+        .then((res) => Number(res[0]?.count ?? 0));
+
+      const perPage = filters.perPage ?? 10;
+      const page = filters.page ?? 1;
+      const offset = (page - 1) * perPage;
 
       const results = await db.query.awards.findMany({
-        where: whereConditions.length ? and(...whereConditions) : undefined,
+        where,
+        limit: perPage,
+        offset,
         orderBy: (awards, { desc }) => [desc(awards.id)],
       });
 
+      const allFiles = await db.query.files.findMany();
       results.forEach((award) => {
-        const file = files.find((file) => file.nitxCode === award.nitxCode);
+        const file = allFiles.find((file) => file.nitxCode === award.nitxCode);
         if (file) {
           award.url = file.url;
         }
       });
 
-      return results;
+      return {
+        data: results,
+        total,
+        page,
+        perPage,
+        totalPages: Math.ceil(total / perPage),
+      };
     },
     [JSON.stringify(filters)],
     { revalidate: 3600, tags: ["awards"] }

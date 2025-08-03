@@ -24,7 +24,7 @@ const data = {
   user: {
     name: "admin",
     email: "admin@nitx.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "/next.svg",
   },
   navMain: [],
   navClouds: [

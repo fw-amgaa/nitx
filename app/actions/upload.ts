@@ -1,8 +1,10 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { db } from "../db/client";
 import { awards } from "../db/schema";
+
+const BATCH_SIZE = 500;
 
 export type UploadAwardsInput = {
   firstName: string;
@@ -12,6 +14,11 @@ export type UploadAwardsInput = {
   nitxCode: string;
   date: string;
   status: string;
+  awardOrder?: string;
+  awardedDate?: string;
+  medalNumber?: string;
+  details?: string;
+  url?: string;
 };
 
 export type UploadAwardsResult =
@@ -36,32 +43,24 @@ export async function uploadAwards(
       };
     }
 
-    const validData = data.filter(
-      (row) =>
-        row.firstName &&
-        row.lastName &&
-        row.register &&
-        row.awardName &&
-        row.nitxCode &&
-        row.date &&
-        row.status
-    );
-
-    if (validData.length === 0) {
+    if (data.length === 0) {
       return {
         success: false,
         message: "Хоосон эсвэл бүрэн бус мөр байна. Шалгана уу.",
       };
     }
 
-    await db.insert(awards).values(validData);
+    for (let i = 0; i < data.length; i += BATCH_SIZE) {
+      const chunk = data.slice(i, i + BATCH_SIZE);
+      await db.insert(awards).values(chunk);
+    }
 
     revalidateTag("awards");
 
     return {
       success: true,
-      insertedCount: validData.length,
-      message: `${validData.length} мөр амжилттай хадгалагдлаа.`,
+      insertedCount: data.length,
+      message: `${data.length} мөр амжилттай хадгалагдлаа.`,
     };
   } catch (err) {
     console.error("❌ Шагналын өгөгдөл хадгалах үед алдаа гарлаа:", err);
