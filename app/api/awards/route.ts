@@ -29,7 +29,8 @@ export async function GET(req: NextRequest) {
     const result = await db
       .select()
       .from(awards)
-      .where(conditions.length ? and(...conditions) : undefined);
+      .where(conditions.length ? and(...conditions) : undefined)
+      .limit(100);
 
     result.forEach((award) => {
       const file = files.find((file) => file.nitxCode === award.nitxCode);
