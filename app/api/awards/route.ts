@@ -24,7 +24,8 @@ export async function GET(req: NextRequest) {
       conditions.push(ilike(awards.register, `%${register}%`));
     }
 
-    const files = await db.query.files.findMany();
+    const allFiles = await db.query.files.findMany();
+    const allPageFiles = await db.query.pageFiles.findMany();
 
     const result = await db
       .select()
@@ -33,10 +34,13 @@ export async function GET(req: NextRequest) {
       .limit(100);
 
     result.forEach((award) => {
-      const file = files.find((file) => file.nitxCode === award.nitxCode);
-      if (file) {
-        award.url = file.url;
-      }
+      const file = allFiles.find((file) => file.nitxCode === award.nitxCode);
+      const pageFile = allPageFiles.find(
+        (file) => file.pageNumber === award.pageNumber
+      );
+
+      if (file) award.url = file.url;
+      if (pageFile) award.pageNumber = pageFile.url;
     });
 
     return NextResponse.json({ success: true, data: result });

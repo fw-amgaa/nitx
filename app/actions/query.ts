@@ -72,11 +72,16 @@ export const awardsList = async (filters: AwardFilters) => {
       });
 
       const allFiles = await db.query.files.findMany();
+      const allPageFiles = await db.query.pageFiles.findMany();
+
       results.forEach((award) => {
         const file = allFiles.find((file) => file.nitxCode === award.nitxCode);
-        if (file) {
-          award.url = file.url;
-        }
+        const pageFile = allPageFiles.find(
+          (file) => file.pageNumber === award.pageNumber
+        );
+
+        if (file) award.url = file.url;
+        if (pageFile) award.pageNumber = pageFile.url;
       });
 
       return {

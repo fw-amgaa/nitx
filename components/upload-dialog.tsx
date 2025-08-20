@@ -107,7 +107,7 @@ async function parseExcel(file: File): Promise<UploadAwardsInput[]> {
   const json = XLSX.utils.sheet_to_json<Record<string, string | number>>(
     sheet,
     {
-      range: 3,
+      range: 2,
       defval: "",
     }
   );
@@ -119,7 +119,12 @@ async function parseExcel(file: File): Promise<UploadAwardsInput[]> {
     awardName: String(row["Ямар шагналд тодорхойлогдсон"] || ""),
     nitxCode: String(row["Тогтоолын дугаар"] || ""),
     date: String(row["НИТХ-ын Тогтоолын огноо"] || ""),
-    awardOrder: String(row["Цол, одон, медалийн дугаарлалт"] || ""),
+    awardOrder: String(
+      row["Хавсралт дахь Цол, одон, медалийн дугаарлалт"] || ""
+    ),
+    pageNumber: String(
+      row["Хавсралтад орсон нэртэй хэсгийн хуудасны дугаар "] || ""
+    ),
     status: String(row["Төлөв"] || ""),
     awardedDate: String(row["Шагнагдсан огноо"] || ""),
     medalNumber: String(row["Одон медалийн дугаар"] || ""),

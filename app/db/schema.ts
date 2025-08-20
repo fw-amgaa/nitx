@@ -14,6 +14,7 @@ export const awards = pgTable("awards", {
   url: text("url"),
   awardedDate: text("awarded_date"),
   medalNumber: text("medal_number"),
+  pageNumber: text("page_number"),
   details: text("details"),
 });
 
@@ -22,4 +23,11 @@ export const files = pgTable("files", {
 
   url: text("url").notNull(),
   nitxCode: varchar("nitx_code").notNull(),
+});
+
+export const pageFiles = pgTable("page_files", {
+  id: serial("id").primaryKey(),
+
+  url: text("url").notNull(),
+  pageNumber: text("page_number").notNull(),
 });

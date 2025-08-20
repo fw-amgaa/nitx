@@ -17,6 +17,7 @@ export type UploadAwardsInput = {
   awardOrder?: string;
   awardedDate?: string;
   medalNumber?: string;
+  pageNumber?: string;
   details?: string;
   url?: string;
 };
