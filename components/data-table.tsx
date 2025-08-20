@@ -211,14 +211,18 @@ const columns: ColumnDef<Award>[] = [
     header: () => <div className="w-full">Хуудасны дугаар</div>,
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <a
-          className=""
-          href={row.original.pageNumber || ""}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <FileText className="text-[#F40F02]" />
-        </a>
+        {row.original.pageNumber ? (
+          <a
+            className=""
+            href={row.original.pageNumber}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FileText className="text-[#F40F02]" />
+          </a>
+        ) : (
+          "-"
+        )}
       </div>
     ),
   },

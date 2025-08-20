@@ -80,7 +80,9 @@ export default function UploadAwardsDialog() {
         />
 
         {loading && (
-          <p className="text-sm text-muted-foreground">Уншиж байна...</p>
+          <p className="text-sm text-muted-foreground">
+            Мэдээлэл хадгалж байх үед энэ цонхыг хааж болохгүйг анхаарна уу!
+          </p>
         )}
 
         {fileData.length > 0 && (
