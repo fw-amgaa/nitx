@@ -5,7 +5,6 @@ import { revalidateTag } from "next/cache";
 import { db } from "../db/client";
 import { awards } from "../db/schema";
 import { unstable_cache } from "@/lib/unstable-cache";
-import { PER_PAGE_DEFAULT } from "@/lib/constants";
 
 interface UpdateAwardParams {
   id: number;
@@ -13,6 +12,7 @@ interface UpdateAwardParams {
   lastName: string;
   register: string;
   awardName: string;
+  pageNumber: string | null;
   nitxCode: string;
   date: string;
   status: string;
@@ -120,6 +120,7 @@ export async function updateAward(data: UpdateAwardParams) {
         lastName: data.lastName,
         register: data.register,
         awardName: data.awardName,
+        pageNumber: data.pageNumber,
         nitxCode: data.nitxCode,
         date: data.date,
         status: data.status,
