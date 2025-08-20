@@ -74,6 +74,11 @@ export function UpdateAwardSheet({ award }: { award: Award }) {
             placeholder="НИТХ дугаар"
           />
           <Input
+            value={form.pageNumber || ""}
+            onChange={(e) => onChange("pageNumber", e.target.value)}
+            placeholder="Хуудасны дугаар"
+          />
+          <Input
             value={form.date}
             onChange={(e) => onChange("date", e.target.value)}
             placeholder="Огноо"
