@@ -45,14 +45,13 @@ import {
 import * as React from "react";
 import { z } from "zod";
 
-import { TFile } from "@/app/actions/file";
+import { TPageFile } from "@/app/actions/page-file";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
@@ -73,11 +72,10 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { formatFileSize } from "@/lib/utils";
-import { useRouter, useSearchParams } from "next/navigation";
-import { UploadFile } from "./upload-sheet";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { DeleteFileDialog } from "./delete-dialog";
-import { TPageFile } from "@/app/actions/page-file";
+import { UploadFile } from "./upload-sheet";
 
 export const schema = z.object({
   id: z.number(),
