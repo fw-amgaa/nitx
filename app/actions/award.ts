@@ -27,7 +27,7 @@ interface AwardFilters {
   awardName?: string;
 }
 
-export type Award = Awaited<ReturnType<typeof awardsList>>["data"][number];
+export type TAward = Awaited<ReturnType<typeof awardsList>>["data"][number];
 
 export const awardsList = async (filters: AwardFilters) => {
   return await unstable_cache(

@@ -1,8 +1,11 @@
 "use client";
 
 import {
+  IconAward,
   IconCamera,
   IconFileAi,
+  IconFileAnalytics,
+  IconFileCertificate,
   IconFileDescription,
   IconInnerShadowTop,
 } from "@tabler/icons-react";
@@ -26,7 +29,23 @@ const data = {
     email: "admin@nitx.com",
     avatar: "/next.svg",
   },
-  navMain: [],
+  navMain: [
+    {
+      title: "Төрийн шагналын тогтоол",
+      url: "/",
+      icon: IconAward,
+    },
+    {
+      title: "Тогтоолын файл",
+      url: "/files",
+      icon: IconFileCertificate,
+    },
+    {
+      title: "Хуудасны файл",
+      url: "/page-files",
+      icon: IconFileAnalytics,
+    },
+  ],
   navClouds: [
     {
       title: "Capture",

@@ -1,31 +1,36 @@
 "use client";
 
-import { useTransition, useState } from "react";
+import { deletePageFile } from "@/app/actions/page-file";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { IconTrash } from "@tabler/icons-react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { deleteAward } from "@/app/actions/award";
 
-export function DeleteAwardDialog({ id }: { id: number }) {
+export function DeleteFileDialog({ id }: { id: number }) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
     startTransition(async () => {
       try {
-        await deleteAward(id);
+        const { error } = await deletePageFile(id);
+
+        if (error) {
+          toast.error(error);
+          return;
+        }
+
         toast.success("Амжилттай устгалаа.");
         setOpen(false);
-        // Optionally: trigger a refresh here if you're using SWR or useRouter().refresh()
       } catch {
         toast.error("Устгах үед алдаа гарлаа.");
       }

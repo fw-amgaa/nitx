@@ -11,10 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Award, updateAward } from "@/app/actions/query";
+import { TAward, updateAward } from "@/app/actions/award";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
 
-export function UpdateAwardSheet({ award }: { award: Award }) {
+export function UpdateAwardSheet({ award }: { award: TAward }) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(award);
   const [loading, setLoading] = useState(false);

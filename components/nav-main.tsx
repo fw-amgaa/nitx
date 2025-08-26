@@ -9,6 +9,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import UploadAwardsDialog from "./upload-dialog";
 
 export function NavMain({
@@ -20,6 +22,8 @@ export function NavMain({
     icon?: Icon;
   }[];
 }) {
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -31,10 +35,15 @@ export function NavMain({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
+              <Link href={item.url}>
+                <SidebarMenuButton
+                  isActive={pathname === item.url}
+                  tooltip={item.title}
+                >
+                  {item.icon && <item.icon />}
+                  <span>{item.title}</span>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>

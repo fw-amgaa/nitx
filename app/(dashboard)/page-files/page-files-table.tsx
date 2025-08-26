@@ -23,12 +23,9 @@ import {
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-  IconCircleCheckFilled,
   IconDotsVertical,
   IconFileCertificate,
-  IconGripVertical,
   IconLayoutColumns,
-  IconLoader,
 } from "@tabler/icons-react";
 import {
   ColumnDef,
@@ -48,10 +45,9 @@ import {
 import * as React from "react";
 import { z } from "zod";
 
-import { TAward } from "@/app/actions/award";
+import { TFile } from "@/app/actions/file";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -76,12 +72,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { FileText } from "lucide-react";
+import { formatFileSize } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import { DeleteAwardDialog } from "./delete-dialog";
-import { SearchInput } from "./search-input";
-import { UpdateAwardSheet } from "./update-sheet";
+import { UploadFile } from "./upload-sheet";
 import Link from "next/link";
+import { DeleteFileDialog } from "./delete-dialog";
+import { TPageFile } from "@/app/actions/page-file";
 
 export const schema = z.object({
   id: z.number(),
@@ -93,166 +89,43 @@ export const schema = z.object({
   reviewer: z.string(),
 });
 
-// Create a separate component for the drag handle
-function DragHandle({ id }: { id: number }) {
-  const { attributes, listeners } = useSortable({
-    id,
-  });
-
-  return (
-    <Button
-      {...attributes}
-      {...listeners}
-      variant="ghost"
-      size="icon"
-      className="text-muted-foreground size-7 hover:bg-transparent"
-    >
-      <IconGripVertical className="text-muted-foreground size-3" />
-      <span className="sr-only">Drag to reorder</span>
-    </Button>
-  );
-}
-
-const columns: ColumnDef<TAward>[] = [
+const columns: ColumnDef<TPageFile>[] = [
   {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
+    accessorKey: "name",
+    header: () => <div>Нэр</div>,
+    cell: ({ row }) => <div>{row.original.name}</div>,
   },
   {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
+    accessorKey: "size",
+    header: () => <div>Хэмжээ</div>,
+    cell: ({ row }) => <div>{formatFileSize(parseInt(row.original.size))}</div>,
+  },
+  {
+    accessorKey: "pageNumber",
+    header: "Хуудасны дугаар",
     cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "lastName",
-    header: () => <div className="w-full">Овог</div>,
-    cell: ({ row }) => <div className="">{row.original.lastName}</div>,
-  },
-  {
-    accessorKey: "firstName",
-    header: () => <div className="w-full">Нэр</div>,
-    cell: ({ row }) => <div className="">{row.original.firstName}</div>,
-  },
-  {
-    accessorKey: "register",
-    header: () => <div className="w-full">Регистрийн дугаар</div>,
-    cell: ({ row }) => <div className="">{row.original.register}</div>,
-  },
-  {
-    accessorKey: "awardName",
-    header: () => <div className="w-full">Ямар шагналд тодорхойлогдсон</div>,
-    cell: ({ row }) => <div className="">{row.original.awardName}</div>,
-  },
-  {
-    accessorKey: "date",
-    header: () => <div className="w-full">НИТХ-ын Тогтоолын огноо</div>,
-    cell: ({ row }) => <div className="text-center">{row.original.date}</div>,
-  },
-  {
-    accessorKey: "nitxCode",
-    header: "НИТХ-ын тогтоолын дугаар",
-    cell: ({ row }) => (
-      <div className="flex justify-center">
+      <div>
         <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.nitxCode}
+          {row.original.pageNumber}
         </Badge>
       </div>
     ),
   },
   {
     accessorKey: "url",
-    header: () => <div className="w-full">Тогтоол</div>,
+    header: () => <div>Тогтоол</div>,
     cell: ({ row }) => (
-      <Link
-        href={row.original.url || ""}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <Link href={row.original.url} target="_blank" rel="noopener noreferrer">
         <IconFileCertificate color="#F59E0B" />
       </Link>
     ),
   },
   {
-    accessorKey: "awardOrder",
-    header: () => <div className="w-full">Цол, одон, медалийн дугаарлалт</div>,
+    accessorKey: "uploadedAt",
+    header: () => <div>Оруулсан огноо</div>,
     cell: ({ row }) => (
-      <div className="flex justify-center">
-        <Badge variant="outline" className="text-muted-foreground px-1.5">
-          {row.original.awardOrder}
-        </Badge>
-      </div>
+      <div>{new Date(row.original.uploadedAt).toLocaleString()}</div>
     ),
-  },
-  {
-    accessorKey: "pageNumber",
-    header: () => <div className="w-full">Хуудасны дугаар</div>,
-    cell: ({ row }) => (
-      <div className="flex justify-center">
-        {row.original.pageNumber ? (
-          <a
-            className=""
-            href={row.original.pageNumber}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FileText className="text-[#F40F02]" />
-          </a>
-        ) : (
-          "-"
-        )}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: "Төлөв",
-    cell: ({ row }) => (
-      <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.status === "ЕТГ-т уламжлагдсан " ? (
-          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-        ) : (
-          <IconLoader />
-        )}
-        {row.original.status}
-      </Badge>
-    ),
-  },
-  {
-    accessorKey: "awardedDate",
-    header: () => <div className="w-full">Шагнагдсан огноо</div>,
-    cell: ({ row }) => <div className="">{row.original.awardedDate}</div>,
-  },
-  {
-    accessorKey: "medalNumber",
-    header: () => <div className="w-full">Одон медалийн дугаар</div>,
-    cell: ({ row }) => <div className="">{row.original.medalNumber}</div>,
-  },
-  {
-    accessorKey: "details",
-    header: () => <div className="w-full">Шагнагдсан мэдээлэл</div>,
-    cell: ({ row }) => <div className="">{row.original.details}</div>,
   },
   {
     id: "actions",
@@ -269,16 +142,14 @@ const columns: ColumnDef<TAward>[] = [
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <UpdateAwardSheet award={row.original} />
-          <DropdownMenuSeparator />
-          <DeleteAwardDialog id={row.original.id} />
+          <DeleteFileDialog id={row.original.id} />
         </DropdownMenuContent>
       </DropdownMenu>
     ),
   },
 ];
 
-function DraggableRow({ row }: { row: Row<TAward> }) {
+function DraggableRow({ row }: { row: Row<TPageFile> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
   });
@@ -303,11 +174,11 @@ function DraggableRow({ row }: { row: Row<TAward> }) {
   );
 }
 
-export function DataTable({
+export function PageFilesTable({
   data,
   totalCount,
 }: {
-  data: TAward[];
+  data: TPageFile[];
   totalCount: number;
 }) {
   const router = useRouter();
@@ -388,10 +259,10 @@ export function DataTable({
     >
       <div className="flex items-center justify-between px-4 lg:px-6">
         <div className="flex items-center gap-2">
-          <SearchInput name="firstName" placeholder="Нэрээр хайх" />
+          {/* <SearchInput name="firstName" placeholder="Нэрээр хайх" />
           <SearchInput name="lastName" placeholder="Овгоор хайх" />
           <SearchInput name="register" placeholder="Регистр хайх" />
-          <SearchInput name="awardName" placeholder="Тогтоолын нэр хайх" />
+          <SearchInput name="awardName" placeholder="Тогтоолын нэр хайх" /> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
@@ -425,6 +296,8 @@ export function DataTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <UploadFile />
         </div>
       </div>
       <TabsContent

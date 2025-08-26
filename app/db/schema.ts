@@ -20,14 +20,22 @@ export const awards = pgTable("awards", {
 
 export const files = pgTable("files", {
   id: serial("id").primaryKey(),
-
   url: text("url").notNull(),
   nitxCode: varchar("nitx_code").notNull(),
+
+  key: text("key").notNull(),
+  name: text("name").notNull(),
+  size: text("size").notNull(),
+  uploadedAt: text("uploaded_at").notNull(),
 });
 
 export const pageFiles = pgTable("page_files", {
   id: serial("id").primaryKey(),
-
   url: text("url").notNull(),
   pageNumber: text("page_number").notNull(),
+
+  key: text("key").notNull(),
+  name: text("name").notNull(),
+  size: text("size").notNull(),
+  uploadedAt: text("uploaded_at").notNull(),
 });
