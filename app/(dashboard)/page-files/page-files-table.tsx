@@ -73,10 +73,8 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { formatFileSize } from "@/lib/utils";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { DeleteFileDialog } from "./delete-dialog";
 import { UploadFile } from "./upload-sheet";
-import { TFile } from "@/app/actions/file";
 
 export const schema = z.object({
   id: z.number(),
@@ -191,17 +189,17 @@ export function PageFilesTable({
   data: TPageFile[];
   totalCount: number;
 }) {
-  const router = useRouter();
+  // const router = useRouter();
 
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
 
-  const page = Number(searchParams.get("page") || "1");
-  const perPage = Number(searchParams.get("perPage") || "10");
+  // const page = Number(searchParams.get("page") || "1");
+  // const perPage = Number(searchParams.get("perPage") || "10");
 
-  const [pagination, setPagination] = React.useState({
-    pageIndex: page - 1,
-    pageSize: perPage,
-  });
+  // const [pagination, setPagination] = React.useState({
+  //   pageIndex: page - 1,
+  //   pageSize: perPage,
+  // });
 
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -223,12 +221,12 @@ export function PageFilesTable({
     [data]
   );
 
-  const updateQueryParams = (newPage: number, newPerPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", newPage.toString());
-    params.set("perPage", newPerPage.toString());
-    router.push(`?${params.toString()}`);
-  };
+  // const updateQueryParams = (newPage: number, newPerPage: number) => {
+  //   const params = new URLSearchParams(searchParams.toString());
+  //   params.set("page", newPage.toString());
+  //   params.set("perPage", newPerPage.toString());
+  //   router.push(`?${params.toString()}`);
+  // };
 
   const table = useReactTable({
     data,
@@ -238,7 +236,7 @@ export function PageFilesTable({
       columnVisibility,
       rowSelection,
       columnFilters,
-      pagination,
+      // pagination,
     },
     getRowId: (row) => row.id.toString(),
     enableRowSelection: true,
@@ -252,14 +250,14 @@ export function PageFilesTable({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    manualPagination: true,
-    pageCount: Math.ceil(totalCount / pagination.pageSize),
-    onPaginationChange: (updater) => {
-      const next =
-        typeof updater === "function" ? updater(pagination) : updater;
-      setPagination(next);
-      updateQueryParams(next.pageIndex + 1, next.pageSize);
-    },
+    // manualPagination: true,
+    // pageCount: Math.ceil(totalCount / pagination.pageSize),
+    // onPaginationChange: (updater) => {
+    //   const next =
+    //     typeof updater === "function" ? updater(pagination) : updater;
+    //   setPagination(next);
+    //   updateQueryParams(next.pageIndex + 1, next.pageSize);
+    // },
   });
 
   return (

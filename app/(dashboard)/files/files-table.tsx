@@ -180,17 +180,17 @@ export function FilesTable({
   data: TFile[];
   totalCount: number;
 }) {
-  const router = useRouter();
+  // const router = useRouter();
 
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
 
-  const page = Number(searchParams.get("page") || "1");
-  const perPage = Number(searchParams.get("perPage") || "10");
+  // const page = Number(searchParams.get("page") || "1");
+  // const perPage = Number(searchParams.get("perPage") || "10");
 
-  const [pagination, setPagination] = React.useState({
-    pageIndex: page - 1,
-    pageSize: perPage,
-  });
+  // const [pagination, setPagination] = React.useState({
+  //   pageIndex: page - 1,
+  //   pageSize: perPage,
+  // });
 
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -212,12 +212,12 @@ export function FilesTable({
     [data]
   );
 
-  const updateQueryParams = (newPage: number, newPerPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", newPage.toString());
-    params.set("perPage", newPerPage.toString());
-    router.push(`?${params.toString()}`);
-  };
+  // const updateQueryParams = (newPage: number, newPerPage: number) => {
+  //   const params = new URLSearchParams(searchParams.toString());
+  //   params.set("page", newPage.toString());
+  //   params.set("perPage", newPerPage.toString());
+  //   router.push(`?${params.toString()}`);
+  // };
 
   const table = useReactTable({
     data,
@@ -227,7 +227,7 @@ export function FilesTable({
       columnVisibility,
       rowSelection,
       columnFilters,
-      pagination,
+      // pagination,
     },
     getRowId: (row) => row.id.toString(),
     enableRowSelection: true,
@@ -241,14 +241,14 @@ export function FilesTable({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    manualPagination: true,
-    pageCount: Math.ceil(totalCount / pagination.pageSize),
-    onPaginationChange: (updater) => {
-      const next =
-        typeof updater === "function" ? updater(pagination) : updater;
-      setPagination(next);
-      updateQueryParams(next.pageIndex + 1, next.pageSize);
-    },
+    manualPagination: false,
+    // pageCount: Math.ceil(totalCount / pagination.pageSize),
+    // onPaginationChange: (updater) => {
+    //   const next =
+    //     typeof updater === "function" ? updater(pagination) : updater;
+    //   setPagination(next);
+    //   updateQueryParams(next.pageIndex + 1, next.pageSize);
+    // },
   });
 
   return (
