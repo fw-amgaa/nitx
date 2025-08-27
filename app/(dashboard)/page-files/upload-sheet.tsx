@@ -84,8 +84,8 @@ export function UploadFile() {
           <div className="grid gap-3">
             <Label>Тогтоолын дугаар</Label>
             <Input
-              value={pageNumber}
-              onChange={(e) => setPageNumber(e.target.value)}
+              value={nitxCode}
+              onChange={(e) => setNitxCode(e.target.value)}
               placeholder="Тогтоолын дугаар"
             />
           </div>
