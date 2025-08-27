@@ -76,6 +76,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DeleteFileDialog } from "./delete-dialog";
 import { UploadFile } from "./upload-sheet";
+import { TFile } from "@/app/actions/file";
 
 export const schema = z.object({
   id: z.number(),

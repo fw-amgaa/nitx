@@ -1,5 +1,6 @@
 "use client";
 
+import { filesList, TFile } from "@/app/actions/file";
 import { uploadPageFile } from "@/app/actions/page-file";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,9 +16,18 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { UploadButton } from "@/lib/upload-thing";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectLabel,
+  SelectItem,
+} from "@/components/ui/select";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "sonner";
 
 export function UploadFile() {
@@ -31,6 +41,7 @@ export function UploadFile() {
   const [nitxCode, setNitxCode] = React.useState("");
   const [pageNumber, setPageNumber] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [options, setOptions] = React.useState<TFile[]>([]);
 
   const handleSubmit = async () => {
     if (!file.key) {
@@ -66,6 +77,13 @@ export function UploadFile() {
     setOpen(false);
   };
 
+  useEffect(() => {
+    (async () => {
+      const files = await filesList();
+      setOptions(files.data);
+    })();
+  }, []);
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
@@ -82,12 +100,22 @@ export function UploadFile() {
         </SheetHeader>
         <div className="grid flex-1 auto-rows-min gap-6 px-4">
           <div className="grid gap-3">
-            <Label>Тогтоолын дугаар</Label>
-            <Input
-              value={nitxCode}
-              onChange={(e) => setNitxCode(e.target.value)}
-              placeholder="Тогтоолын дугаар"
-            />
+            <Label>Тогтоол</Label>
+            <Select onValueChange={(value) => setNitxCode(value)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Тогтоол сонгох" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Тогтоолууд</SelectLabel>
+                  {options.map((option) => (
+                    <SelectItem key={option.id} value={option.nitxCode}>
+                      {option.nitxCode}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
           <div className="grid gap-3">
             <Label>Хуудасны дугаар</Label>
