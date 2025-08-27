@@ -77,11 +77,13 @@ export const awardsList = async (filters: AwardFilters) => {
       results.forEach((award) => {
         const file = allFiles.find((file) => file.nitxCode === award.nitxCode);
         const pageFile = allPageFiles.find(
-          (file) => file.pageNumber === award.pageNumber
+          (file) =>
+            file.pageNumber === award.pageNumber &&
+            file.nitxCode === award.nitxCode
         );
 
         if (file) award.url = file.url;
-        if (pageFile) award.pageNumber = pageFile.url;
+        if (pageFile) award.pageUrl = pageFile.url;
       });
 
       return {

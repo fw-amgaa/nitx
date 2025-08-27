@@ -7,7 +7,7 @@ export default async function Page() {
 
   return (
     <Suspense>
-      <FilesTable data={data} totalCount={data.length} />;
+      <FilesTable data={data} totalCount={data.length} />
     </Suspense>
   );
 }

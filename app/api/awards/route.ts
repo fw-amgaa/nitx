@@ -27,23 +27,25 @@ export async function GET(req: NextRequest) {
     const allFiles = await db.query.files.findMany();
     const allPageFiles = await db.query.pageFiles.findMany();
 
-    const result = await db
+    const results = await db
       .select()
       .from(awards)
       .where(conditions.length ? and(...conditions) : undefined)
       .limit(100);
 
-    result.forEach((award) => {
+    results.forEach((award) => {
       const file = allFiles.find((file) => file.nitxCode === award.nitxCode);
       const pageFile = allPageFiles.find(
-        (file) => file.pageNumber === award.pageNumber
+        (file) =>
+          file.pageNumber === award.pageNumber &&
+          file.nitxCode === award.nitxCode
       );
 
       if (file) award.url = file.url;
-      if (pageFile) award.pageNumber = pageFile.url;
+      if (pageFile) award.pageUrl = pageFile.url;
     });
 
-    return NextResponse.json({ success: true, data: result });
+    return NextResponse.json({ success: true, data: results });
   } catch (error) {
     console.error("Failed to fetch awards:", error);
     return NextResponse.json(

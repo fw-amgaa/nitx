@@ -210,19 +210,23 @@ const columns: ColumnDef<TAward>[] = [
     header: () => <div className="w-full">Хуудасны дугаар</div>,
     cell: ({ row }) => (
       <div className="flex justify-center">
-        {row.original.pageNumber ? (
-          <a
-            className=""
-            href={row.original.pageNumber}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FileText className="text-[#F40F02]" />
-          </a>
-        ) : (
-          "-"
-        )}
+        <Badge variant="outline" className="text-muted-foreground px-1.5">
+          {row.original.pageNumber}
+        </Badge>
       </div>
+    ),
+  },
+  {
+    accessorKey: "pageUrl",
+    header: () => <div className="w-full">Хуудасны файл</div>,
+    cell: ({ row }) => (
+      <Link
+        href={row.original.pageUrl || ""}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <IconFileCertificate color="#F59E0B" />
+      </Link>
     ),
   },
   {

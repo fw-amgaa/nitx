@@ -99,6 +99,17 @@ const columns: ColumnDef<TPageFile>[] = [
     cell: ({ row }) => <div>{formatFileSize(parseInt(row.original.size))}</div>,
   },
   {
+    accessorKey: "nitxCode",
+    header: "НИТХ-ын тогтоолын дугаар",
+    cell: ({ row }) => (
+      <div>
+        <Badge variant="outline" className="text-muted-foreground px-1.5">
+          {row.original.nitxCode}
+        </Badge>
+      </div>
+    ),
+  },
+  {
     accessorKey: "pageNumber",
     header: "Хуудасны дугаар",
     cell: ({ row }) => (

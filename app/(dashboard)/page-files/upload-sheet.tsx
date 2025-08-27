@@ -28,6 +28,7 @@ export function UploadFile() {
     size: "",
     key: "",
   });
+  const [nitxCode, setNitxCode] = React.useState("");
   const [pageNumber, setPageNumber] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
@@ -49,6 +50,7 @@ export function UploadFile() {
       size: file.size,
       key: file.key,
       pageNumber,
+      nitxCode,
       uploadedAt: new Date().toISOString(),
     });
     setLoading(false);
@@ -79,6 +81,14 @@ export function UploadFile() {
           </SheetDescription>
         </SheetHeader>
         <div className="grid flex-1 auto-rows-min gap-6 px-4">
+          <div className="grid gap-3">
+            <Label>Тогтоолын дугаар</Label>
+            <Input
+              value={pageNumber}
+              onChange={(e) => setPageNumber(e.target.value)}
+              placeholder="Тогтоолын дугаар"
+            />
+          </div>
           <div className="grid gap-3">
             <Label>Хуудасны дугаар</Label>
             <Input
