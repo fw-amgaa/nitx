@@ -15,6 +15,7 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { SidebarMenuButton } from "./ui/sidebar";
+import { cn } from "@/lib/utils";
 
 export default function UploadAwardsDialog() {
   const [open, setOpen] = useState(false);
@@ -74,7 +75,11 @@ export default function UploadAwardsDialog() {
           <span>Шагнал оруулах</span>
         </SidebarMenuButton>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent
+        onPointerDownOutside={loading ? (e) => e.preventDefault() : undefined}
+        onEscapeKeyDown={loading ? (e) => e.preventDefault() : undefined}
+        className={cn("max-w-md", loading && "[&>button]:hidden")}
+      >
         <DialogHeader>
           <DialogTitle>Excel файл оруулах</DialogTitle>
         </DialogHeader>
