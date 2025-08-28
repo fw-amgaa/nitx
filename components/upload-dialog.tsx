@@ -3,14 +3,10 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 
+import { uploadAwards, UploadAwardsInput } from "@/app/actions/upload";
 import { IconCirclePlusFilled } from "@tabler/icons-react";
 import { toast } from "sonner";
-import {
-  BATCH_SIZE,
-  uploadAwards,
-  UploadAwardsInput,
-} from "@/app/actions/upload";
-import { SidebarMenuButton } from "./ui/sidebar";
+import { Button } from "./ui/button";
 import {
   Dialog,
   DialogContent,
@@ -18,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Button } from "./ui/button";
+import { SidebarMenuButton } from "./ui/sidebar";
 
 export default function UploadAwardsDialog() {
   const [open, setOpen] = useState(false);
@@ -45,7 +41,7 @@ export default function UploadAwardsDialog() {
   async function handleUpload() {
     setLoading(true);
     try {
-      const chunks = chunkArray(fileData, BATCH_SIZE);
+      const chunks = chunkArray(fileData, 500);
 
       for (let i = 0; i < chunks.length; i++) {
         const res = await uploadAwards(chunks[i]);
