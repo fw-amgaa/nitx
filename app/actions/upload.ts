@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 import { db } from "../db/client";
 import { awards } from "../db/schema";
 
-const BATCH_SIZE = 500;
+export const BATCH_SIZE = 500;
 
 export type UploadAwardsInput = {
   firstName: string;

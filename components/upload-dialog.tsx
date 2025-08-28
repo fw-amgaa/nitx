@@ -5,7 +5,11 @@ import * as XLSX from "xlsx";
 
 import { IconCirclePlusFilled } from "@tabler/icons-react";
 import { toast } from "sonner";
-import { uploadAwards, UploadAwardsInput } from "@/app/actions/upload";
+import {
+  BATCH_SIZE,
+  uploadAwards,
+  UploadAwardsInput,
+} from "@/app/actions/upload";
 import { SidebarMenuButton } from "./ui/sidebar";
 import {
   Dialog,
@@ -41,15 +45,22 @@ export default function UploadAwardsDialog() {
   async function handleUpload() {
     setLoading(true);
     try {
-      const res = await uploadAwards(fileData);
-      if (res.success) {
-        toast.success(res.message);
-        setOpen(false);
-        setFileData([]);
-      } else {
-        toast.error(res.message);
+      const chunks = chunkArray(fileData, BATCH_SIZE);
+
+      for (let i = 0; i < chunks.length; i++) {
+        const res = await uploadAwards(chunks[i]);
+
+        if (!res.success) {
+          toast.error(`Batch ${i + 1}/${chunks.length} failed: ${res.message}`);
+          return;
+        }
       }
-    } catch {
+
+      toast.success("Бүх өгөгдөл амжилттай илгээгдлээ.");
+      setOpen(false);
+      setFileData([]);
+    } catch (err) {
+      console.error(err);
       toast.error("Өгөгдөл илгээх үед алдаа гарлаа.");
     } finally {
       setLoading(false);
@@ -134,4 +145,12 @@ async function parseExcel(file: File): Promise<UploadAwardsInput[]> {
   }));
 
   return parsed;
+}
+
+function chunkArray<T>(arr: T[], size: number): T[][] {
+  const result: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size));
+  }
+  return result;
 }
