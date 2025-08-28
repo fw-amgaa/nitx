@@ -137,7 +137,7 @@ async function parseExcel(file: File): Promise<UploadAwardsInput[]> {
       row["Хавсралт дахь Цол, одон, медалийн дугаарлалт"] || ""
     ),
     pageNumber: String(
-      row["Хавсралтад орсон нэртэй хэсгийн хуудасны дугаар"] || ""
+      row["Хавсралтад орсон нэртэй хэсгийн хуудасны дугаарын нэр "] || ""
     ),
     status: String(row["Төлөв"] || ""),
     awardedDate: String(row["Шагнагдсан огноо"] || ""),
