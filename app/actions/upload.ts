@@ -24,14 +24,14 @@ export type UploadAwardsInput = {
 
 export type UploadAwardsResult =
   | {
-      success: true;
-      insertedCount: number;
-      message: string;
-    }
+    success: true;
+    insertedCount: number;
+    message: string;
+  }
   | {
-      success: false;
-      message: string;
-    };
+    success: false;
+    message: string;
+  };
 
 export async function uploadAwards(
   data: UploadAwardsInput[]
@@ -56,7 +56,7 @@ export async function uploadAwards(
       await db.insert(awards).values(chunk);
     }
 
-    revalidateTag("awards");
+    revalidateTag("awards", 'max');
 
     return {
       success: true,
