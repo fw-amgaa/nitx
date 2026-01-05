@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { DeleteAllAwardDialog } from "./delete-all-dialog";
 
 export function SiteHeader() {
   return (
@@ -13,6 +14,9 @@ export function SiteHeader() {
         <h1 className="text-base font-medium">
           Төрийн шагналын тогтоолын мэдээлэл
         </h1>
+      </div>
+      <div className="mx-4">
+        <DeleteAllAwardDialog />
       </div>
     </header>
   );

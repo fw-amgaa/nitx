@@ -1,4 +1,4 @@
-import { pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const awards = pgTable("awards", {
   id: serial("id").primaryKey(),
@@ -17,6 +17,9 @@ export const awards = pgTable("awards", {
   pageNumber: text("page_number"),
   pageUrl: text("page_url"),
   details: text("details"),
+
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const files = pgTable("files", {
@@ -28,6 +31,9 @@ export const files = pgTable("files", {
   name: text("name").notNull(),
   size: text("size").notNull(),
   uploadedAt: text("uploaded_at").notNull(),
+
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const pageFiles = pgTable("page_files", {
@@ -40,4 +46,7 @@ export const pageFiles = pgTable("page_files", {
   name: text("name").notNull(),
   size: text("size").notNull(),
   uploadedAt: text("uploaded_at").notNull(),
+
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

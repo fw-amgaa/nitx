@@ -4,7 +4,7 @@ import { and, count, eq, ilike } from "drizzle-orm";
 import { db } from "../db/client";
 import { awards } from "../db/schema";
 import { unstable_cache } from "@/lib/unstable-cache";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 interface UpdateAwardParams {
   id: number;
@@ -106,7 +106,18 @@ export async function deleteAward(id: number) {
 
   try {
     await db.delete(awards).where(eq(awards.id, id));
-    revalidateTag("awards", 'max');
+    revalidateTag("awards", "max");
+  } catch (error) {
+    console.error("❌ Устгах үед алдаа:", error);
+    throw new Error("Устгах үед алдаа гарлаа.");
+  }
+}
+
+export async function deleteAllAward() {
+  try {
+    await db.delete(awards);
+    revalidateTag("awards", "max");
+    revalidatePath("/");
   } catch (error) {
     console.error("❌ Устгах үед алдаа:", error);
     throw new Error("Устгах үед алдаа гарлаа.");
@@ -129,7 +140,7 @@ export async function updateAward(data: UpdateAwardParams) {
       })
       .where(eq(awards.id, data.id));
 
-    revalidateTag("awards", 'max');
+    revalidateTag("awards", "max");
     return { success: true, message: "Амжилттай шинэчиллээ." };
   } catch {
     return { success: false, message: "Алдаа гарлаа. Дахин оролдоно уу." };
