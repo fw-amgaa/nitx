@@ -50,6 +50,8 @@ export function UploadFile() {
       key: file.key,
       nitxCode,
       uploadedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
     setLoading(false);
 
