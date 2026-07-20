@@ -16,6 +16,10 @@ interface UpdateAwardParams {
   nitxCode: string;
   date: string;
   status: string;
+  awardOrder: string | null;
+  awardedDate: string | null;
+  medalNumber: string | null;
+  details: string | null;
 }
 
 interface AwardFilters {
@@ -137,6 +141,11 @@ export async function updateAward(data: UpdateAwardParams) {
         nitxCode: data.nitxCode,
         date: data.date,
         status: data.status,
+        awardOrder: data.awardOrder,
+        awardedDate: data.awardedDate,
+        medalNumber: data.medalNumber,
+        details: data.details,
+        updatedAt: new Date(),
       })
       .where(eq(awards.id, data.id));
 
